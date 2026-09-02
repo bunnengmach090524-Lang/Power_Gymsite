@@ -220,6 +220,16 @@ Route::post('telegram/webhook/{secret}', [\App\Http\Controllers\TelegramWebhookC
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
 
+
+// External cron trigger (cron-job.org) — replaces server-level crontab
+// since Render free tier has no Cron Job service. Token compared with
+// hash_equals to prevent unauthorized triggering of scheduled tasks.
+Route::get('/cron/run-schedule/{token}', function (string $token) {
+    abort_unless(hash_equals(config('app.cron_secret') ?? '', $token), 403);
+    \Illuminate\Support\Facades\Artisan::call('schedule:run');
+    return response('OK');
+});
+
 Route::middleware(['tenant.identify', 'auth'])->prefix('gym/{slug}')->group(function () {
     Route::get('/account', [\App\Http\Controllers\Public\MemberAccountController::class, 'show'])->name('member.account');
     Route::post('/account', [\App\Http\Controllers\Public\MemberAccountController::class, 'update'])->name('member.account.update');
