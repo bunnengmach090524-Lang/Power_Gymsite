@@ -7,6 +7,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "cloudinary/cloudinary_php": "^3.1",
+        "codebar-ag/laravel-flysystem-cloudinary": "^13.0",
         "doctrine/dbal": "^4.4",
         "endroid/qr-code": "^5.0",
         "fidele007/bakong-khqr-php": "^1.2",
